@@ -37,7 +37,7 @@ class Tweet extends Model{
                 t.id,  
                 t.id_usuario, 
                 u.nome, 
-                t.tweet, 
+                t.tweet AS content, 
                 DATE_FORMAT(t.data, '%d/%m/%y %h:%i') as data
             FROM 
                 tweets as t

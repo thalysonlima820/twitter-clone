@@ -1,10 +1,8 @@
 angular.module('myApp', [])
-    .controller('namesCtrl', function($scope, $http) {
-        $scope.init = () => {
-            $(document).ready(()=>{
-                get('tweets', 'GET', ).then(function (retorno) {
-
-                })
-            });
-        }
-    });
+		.controller('myCtrl', function($scope, $http) {
+			get('tweets', 'GET', <?= $_SESSION['id'] ?>).then(function(retorno) {
+				retorno = JSON.parse(retorno);
+				$scope.tweets = retorno.tweets;
+				$scope.$digest();
+			})
+		});

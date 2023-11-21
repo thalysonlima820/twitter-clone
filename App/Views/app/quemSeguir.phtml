@@ -1,21 +1,21 @@
 <nav class="navbar navbar-expand-lg menu">
 	<div class="container">
-	  <div class="navbar-nav">
-	  	<a class="menuItem" href="/timeline">
-	  		Home
-	  	</a>
+		<div class="navbar-nav">
+			<a class="menuItem" href="/timeline">
+				Home
+			</a>
 
-	  	<a class="menuItem" href="/sair">
-	  		Sair
-	  	</a>
+			<a class="menuItem" href="/sair">
+				Sair
+			</a>
 			<img src="/img/twitter_logo.png" class="menuIco" />
-	  </div>
+		</div>
 	</div>
 </nav>
 
-<div class="container mt-5">
+<div class="container mt-5" ng-app="myApp" ng-controller="myCtrl">
 	<div class="row pt-2">
-		
+
 		<div class="col-md-3">
 
 			<div class="perfil">
@@ -24,18 +24,18 @@
 				</div>
 
 				<div class="perfilPainel">
-					
-				<div class="row mt-2 mb-2">
+
+					<div class="row mt-2 mb-2">
 						<div class="col mb-2">
-							<span class="perfilPainelNome"><?php 
-								echo $this->view->info_usuario['nome'];
-							?></span>
+							<span class="perfilPainelNome"><?php
+															echo $this->view->info_usuario['nome'];
+															?></span>
 						</div>
 					</div>
 
 					<div class="row mb-2">
 
-					<div class="col">
+						<div class="col">
 							<span class="perfilPainelItem">Tweets</span><br />
 							<span class="perfilPainelItemValor"><?php print_r($this->view->total_tweet['total_tweet']); ?></span>
 						</div>
@@ -58,16 +58,16 @@
 		</div>
 
 		<div class="col-md-6">
-			
+
 			<div class="row mb-2">
 				<div class="col">
 					<div class="card">
 						<div class="card-body">
 							<form method="get" action="/quem_seguir">
 								<div class="input-group mb-3">
-									<input type="text" name="nome" class="form-control" placeholder="Quem você está procurando?">
+									<input ng-model="nome" type="text" name="nome" class="form-control" placeholder="Quem você está procurando?">
 									<div class="input-group-append">
-										<button class="btn btn-primary" type="submit">Procurar</button>
+										<button class="btn btn-primary" ng-click="fn()" type="button">Procurar</button>
 									</div>
 								</div>
 							</form>
@@ -76,34 +76,47 @@
 				</div>
 			</div>
 
-			<?php foreach( $this->view->usuarios as $key => $usuario){ ?>
-			<div class="row mb-2">
-				<div class="col">
-					<div class="card">
-						<div class="card-body">
-							<div class="row">
-								<div class="col-md-6">
-									<?= $usuario['nome'];
-									
-									?>
-								</div>
-							
-								<div class="col-md-6 d-flex justify-content-end">
-									<div>
-										<?php if($usuario['seguindo_sn'] == 0) { ?>
-										<a href="/acao?acao=seguir&id_usuario=<?=$usuario['id']?>" class="btn btn-success">Seguir</a>
-										<?php }
-										if($usuario['seguindo_sn'] == 1) { ?>
-										<a href="/acao?acao=deixar_de_seguir&id_usuario=<?=$usuario['id']?>" class="btn btn-danger">Deixar de seguir</a>
-										<?php } ?>
+			<?php foreach ($this->view->usuarios as $key => $usuario) { ?>
+				<div class="row mb-2">
+					<div class="col">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-6">
+										<?= $usuario['nome'];
+
+										?>
+									</div>
+
+									<div class="col-md-6 d-flex justify-content-end">
+										<div>
+											<?php if ($usuario['seguindo_sn'] == 0) { ?>
+												<a href="/acao?acao=seguir&id_usuario=<?= $usuario['id'] ?>" class="btn btn-success">Seguir</a>
+											<?php }
+											if ($usuario['seguindo_sn'] == 1) { ?>
+												<a href="/acao?acao=deixar_de_seguir&id_usuario=<?= $usuario['id'] ?>" class="btn btn-danger">Deixar de seguir</a>
+											<?php } ?>
 										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 			<?php } ?>
 		</div>
 	</div>
 </div>
+<script src="/js/main.js"></script>
+<script>
+	angular.module('myApp', [])
+		.controller('myCtrl', function($scope, $http) {
+			$scope.fn = () => {
+				get('usuarios/lista', 'GET', `<?= $_SESSION['id'] ?>/${$scope.nome}`).then(function(retorno) {
+					retorno = JSON.parse(retorno);
+					$scope.usuarios = retorno.usuarios;
+					$scope.$digest();
+				})
+			}
+		});
+</script>
